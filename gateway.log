@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/caseit2u2_lab/etb_gate.py", line 34, in <module>
+    run_etb_gate()
+    ~~~~~~~~~~~~^^
+  File "/data/data/com.termux/files/home/caseit2u2_lab/etb_gate.py", line 7, in run_etb_gate
+    gateway.bind(('127.0.0.1', 8082))
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 98] Address already in use
