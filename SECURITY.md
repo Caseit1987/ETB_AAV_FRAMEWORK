@@ -16,7 +16,7 @@ The following activities are strictly prohibited:
 
 ## 📩 How to Submit a Vulnerability Report
 Do **not** open a public GitHub Issue for security bugs. Please submit all findings privately:
-1. Send an email to: **justinschomer@example.com** *(Replace with your preferred email)*
+1. Send an email to: **caseithapp3ns2u2@gmail.com**
 2. Include "VULNERABILITY REPORT: [Brief Description]" in the subject line.
 3. Provide a clear, reproducible Proof of Concept (PoC) script or detailed payload trace.
 
