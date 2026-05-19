@@ -52,6 +52,8 @@ def handle_client(client, addr):
             
         parsed = parse_layerzero_packet(raw_stream)
         if not parsed["valid"]:
+            log_entry = {"timestamp": datetime.utcnow().isoformat(), "status": "FAIL_REJECTED", "reason": parsed["reason"]}
+            with open("proxy_activity.log", "a") as log: log.write(json.dumps(log_entry) + "\n")
             rejection = f'{{"status":"REJECTED","reason":"{parsed["reason"]}"}}'.encode()
             try: client.sendall(http_ok + rejection)
             except: pass
@@ -60,6 +62,8 @@ def handle_client(client, addr):
             
         nonce_ok, nonce_msg = state_manager.validate_and_update_nonce(parsed["src_chain"], parsed["nonce"])
         if not nonce_ok:
+            log_entry = {"timestamp": datetime.utcnow().isoformat(), "status": "FAIL_REJECTED", "reason": nonce_msg}
+            with open("proxy_activity.log", "a") as log: log.write(json.dumps(log_entry) + "\n")
             rejection = f'{{"status":"REJECTED","reason":"{nonce_msg}"}}'.encode()
             try: client.sendall(http_ok + rejection)
             except: pass
