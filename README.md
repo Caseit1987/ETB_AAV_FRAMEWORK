@@ -13,7 +13,7 @@
 
 ## 🚨 Live Bug Bounty Target Endpoint
 Researchers can stress-test the boundary live by firing validation payloads directly to our running proxy instance:
-* **Target Host URL**: `https://ngrok-free.dev`
+* **Target Host URL**: 'https://kesha-nonpresentable-carlee.ngrok-free.dev'
 
 Example Attack Vector Check (`curl`):
 ```bash
