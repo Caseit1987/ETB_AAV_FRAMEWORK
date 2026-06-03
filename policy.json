@@ -1,0 +1,6 @@
+{
+    "authorization": {
+        "alice": ["withdraw:bank", "deposit:bank"],
+        "bob": ["deposit:bank"]
+    }
+}
