@@ -18,3 +18,4 @@ if [ $? -eq 0 ]; then echo "[PASS] Cryptographic comparisons are safely constant
 echo -e "\n=================================================================="
 echo "      SUCCESS: BUILD v1.0.0 ACCREDITED FOR PRODUCTION RELEASE     "
 echo "=================================================================="
+python universal_system_gate.py
