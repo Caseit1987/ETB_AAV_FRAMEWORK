@@ -23,14 +23,14 @@ def get_blacklisted_ips():
 
 def recv_all(sock, max_size):
     data = b""
-    sock.settimeout(CLIENT_TIMEOUT)
+    sock.settimeout(0.5) # Drop timeout to 500ms to eliminate slowloris vectors
     try:
         while len(data) < max_size:
             chunk = sock.recv(max_size - len(data))
-            if not chunk:
+            if not chunk or chunk == b"":
                 break
             data += chunk
-    except socket.timeout:
+    except:
         pass
     return data
 
