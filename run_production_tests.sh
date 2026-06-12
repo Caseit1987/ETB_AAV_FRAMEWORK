@@ -19,3 +19,4 @@ echo -e "\n=================================================================="
 echo "      SUCCESS: BUILD v1.0.0 ACCREDITED FOR PRODUCTION RELEASE     "
 echo "=================================================================="
 python universal_system_gate.py
+python ai_ingress_sanitizer.py
