@@ -1,4 +1,4 @@
-# 🛡️ Eternal Trust Boundary (ETB) AAV Framework
+# 🛡️ Emergent Trust Boundary (ETB) AAV Framework
 ### Founder: Justin Schomer | Caseit2u2 Secure Labs
 *Neutralizing exploitability at the root through architectural boundary validation.*
 
@@ -12,9 +12,11 @@
 
 ## ▶️ Quick Demo (structural validation)
 Run the included script to see ETB in action:
+
 ```bash
 python3 demo_etb.py
-# If you're stuck in the heredoc, just type:
+# Expected output: 2 emergent chains detected (see Proof of Concept below)
+```
 
 ## 🛡️ Complete Invariant Matrix (Pre‑Execution Validation)
 
@@ -26,3 +28,21 @@ python3 demo_etb.py
 | **Consensus / Byzantine** | Quorum required (e.g., 4≥3 signatures) | Unauthorized state change |
 
 All invariants are enforced **before** execution – no trust without validation.
+
+## Proof of Concept: PFTT Case Study Validation
+
+The ETB AAV LayerZero scanner successfully detects emergent chains across trust boundaries. Below is a live scan output from the PFTT (Permanent Facility Testing Tool) case study, demonstrating how CWE-77 chains into CWE-347 and CWE-94 across three distinct trust zones, resulting in full system compromise.
+
+```ansi
+[*] Initializing LayerZero Trust Boundary Mapping...
+[!] Trust Boundary Crossed: Update_Daemon (Zone 1) -> Bootloader_Parser (Zone 2)
+    [ALERT] Emergent Chain Found!
+    └── Path: Update_Daemon (CWE-77) ===> Bootloader_Parser (CWE-347)
+    └── Impact: Privileges leaked via match on 'local_shell_access'
+[!] Trust Boundary Crossed: Bootloader_Parser (Zone 2) -> Kernel_Space (Zone 3)
+    [ALERT] Emergent Chain Found!
+    └── Path: Bootloader_Parser (CWE-347) ===> Kernel_Space (CWE-94)
+    └── Impact: Privileges leaked via match on 'arbitrary_binary_execution'
+
+[*] Scan Complete. Total Emergent Trust Boundary Violations Found: 2
+```
