@@ -1,8 +1,6 @@
 *.log
-proxy_activity.log
-mock_liveness_endpoint.py
-proxy_logger.py
-traffic_generator.py
-app.py
+*.pyc
 __pycache__/
 .pytest_cache/
+*.swp
+.DS_Store
