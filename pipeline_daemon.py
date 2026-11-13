@@ -2,6 +2,7 @@ import os
 import json
 import time
 import datetime
+import subprocess
 import traceback
 import urllib.request
 import urllib.error
@@ -11,6 +12,7 @@ from n8n_telemetry_bridge import fetch_verified_vault_rows, build_stix_bundle, d
 from export_audit_snapshot import generate_audit_snapshot
 
 POLL_SECONDS = float(os.getenv("ETBV_POLL_SECONDS", "60"))
+BACKUP_INTERVAL_SECONDS = float(os.getenv("ETBV_BACKUP_SECONDS", "3600"))
 ALERT_SPREAD_THRESHOLD = float(os.getenv("ETBV_ALERT_SPREAD_PCT", "0.05"))
 ALERT_WEBHOOK_URL = os.getenv("ETBV_ALERT_WEBHOOK", N8N_WEBHOOK_URL)
 
@@ -40,7 +42,8 @@ def dispatch_priority_alert(alerts: list):
 def run_loop():
     token = os.environ["ETB_MASTER_TOKEN"]
     seen_alert_ids = set()
-    print(f"[DAEMON] Starting ETBV Dual-Feed Pipeline Loop (interval: {POLL_SECONDS}s, alert threshold: {ALERT_SPREAD_THRESHOLD}%)...", flush=True)
+    next_backup_at = 0.0
+    print(f"[DAEMON] Starting ETBV Dual-Feed Pipeline Loop (interval: {POLL_SECONDS}s, backup interval: {BACKUP_INTERVAL_SECONDS}s)...", flush=True)
     while True:
         try:
             scan_all_pairs(min_spread_pct=0.001)
@@ -66,6 +69,12 @@ def run_loop():
             bundle = build_stix_bundle(rows)
             dispatch_to_n8n(bundle, N8N_WEBHOOK_URL)
             generate_audit_snapshot()
+
+            now = time.monotonic()
+            if now >= next_backup_at:
+                res = subprocess.run(["./backup_vault.sh"], capture_output=True, text=True, check=True)
+                print(res.stdout.strip(), flush=True)
+                next_backup_at = now + BACKUP_INTERVAL_SECONDS
         except Exception as exc:
             print(f"[DAEMON ERROR] {exc}", flush=True)
             traceback.print_exc()
