@@ -1,0 +1,359 @@
+{
+  "framework": "ETBV AAV LayerZero Framework",
+  "generated_at_utc": "2026-11-13T21:14:59.577001+00:00",
+  "gate_invariants": [
+    "PRE_PARSER_WIRE_CONTRACT_VALIDATION",
+    "GATE_PRIVATE_HMAC_SHA256_BINDING",
+    "SINGLE_USE_MONOTONIC_NONCE_5S_TTL",
+    "FAIL_CLOSED_EXECUTION_BOUNDARY"
+  ],
+  "non_bypassability_proofs": {
+    "etbv_trace_artifact.json": {
+      "final_state": {
+        "address": 16,
+        "value": 1
+      },
+      "telemetry": [
+        {
+          "timestamp": 1794602284.4327571,
+          "route": "PRIMARY_ETBV_GATE",
+          "decision": "ALLOW",
+          "payload_hex": "000100000006010600100001",
+          "reason": "CONTRACT_APPROVED"
+        },
+        {
+          "timestamp": 1794602284.5371277,
+          "route": "PRIMARY_ETBV_GATE",
+          "decision": "DROP",
+          "payload_hex": "00020000000601060010000100060010dead",
+          "reason": "BYTE_ALIASING_MISMATCH (Declared:6 != Actual:12)"
+        },
+        {
+          "timestamp": 1794602284.6410992,
+          "route": "PRIMARY_ETBV_GATE",
+          "decision": "DROP",
+          "payload_hex": "000300000006010600109999",
+          "reason": "UNAUTHORIZED_REGISTER_VALUE (0x9999)"
+        }
+      ]
+    },
+    "etbv_bench01_boundary_proof.json": [
+      {
+        "timestamp": 1794602422.7469263,
+        "route": "DIRECT_INTERNAL_CALL",
+        "action": "ENABLE_RAIL",
+        "status": "DROP",
+        "reason": "MISSING_LAYERZERO_TOKEN",
+        "rail_state": false
+      },
+      {
+        "timestamp": 1794602422.7470016,
+        "route": "CAN_BUS_INGRESS",
+        "action": "ENABLE_RAIL",
+        "status": "DROP",
+        "reason": "CAN_FRAME_INVARIANT_VIOLATION",
+        "rail_state": false
+      },
+      {
+        "timestamp": 1794602422.7478983,
+        "route": "CAN_BUS_INGRESS",
+        "action": "ENABLE_RAIL",
+        "status": "DROP",
+        "reason": "TOCTOU_STATE_DIVERGENCE",
+        "rail_state": false
+      },
+      {
+        "timestamp": 1794602422.7479825,
+        "route": "CAN_BUS_INGRESS",
+        "action": "ENABLE_RAIL",
+        "status": "ALLOW",
+        "reason": "VERIFIED_EXECUTION",
+        "rail_state": true
+      }
+    ],
+    "etbv_bench01_hardened_proof.json": [
+      {
+        "timestamp": 1794602468.9421186,
+        "route": "CAN_BUS_INGRESS",
+        "action": "SET_RAIL_True",
+        "status": "ALLOW",
+        "reason": "VERIFIED_ATOMIC_EXECUTION",
+        "rail_state": true
+      },
+      {
+        "timestamp": 1794602468.9421954,
+        "route": "CAN_BUS_INGRESS",
+        "action": "SET_RAIL_True",
+        "status": "DROP",
+        "reason": "REPLAY_OR_INVALID_NONCE",
+        "rail_state": false
+      },
+      {
+        "timestamp": 1794602468.9422266,
+        "route": "FORGED_CALLER",
+        "action": "SET_RAIL_True",
+        "status": "DROP",
+        "reason": "REPLAY_OR_INVALID_NONCE",
+        "rail_state": false
+      }
+    ],
+    "live_http_gate_proof.json": {
+      "toctou_block": {
+        "http": 403,
+        "detail": "{\"detail\":\"DROP: TOCTOU_OR_FORGED_PAYLOAD\"}"
+      },
+      "replay_block": {
+        "http": 403,
+        "detail": "{\"detail\":\"DROP: REPLAY_OR_INVALID_NONCE\"}"
+      },
+      "atomic_allow": {
+        "http": 200,
+        "detail": "{\"status\":\"VERIFIED_ATOMIC_EXECUTION\"}"
+      }
+    }
+  },
+  "live_stix21_telemetry_bundle": {
+    "type": "bundle",
+    "id": "bundle--941cc833-4018-4474-b130-26dc685fa61e",
+    "objects": [
+      {
+        "type": "observed-data",
+        "spec_version": "2.1",
+        "id": "observed-data--252ad13a-ee0c-40ff-8b49-b1922ac71f91",
+        "created": "2026-11-13T21:14:59.573438+00:00",
+        "modified": "2026-11-13T21:14:59.573438+00:00",
+        "first_observed": "2026-11-13T21:14:59.573438+00:00",
+        "last_observed": "2026-11-13T21:14:59.573438+00:00",
+        "number_observed": 25,
+        "x_etbv_verified_vault_feed": [
+          {
+            "id": 1,
+            "source_market": "Desk_A",
+            "target_market": "Desk_B",
+            "asset_pair": "USDT_USD",
+            "spread_percentage": 2.45,
+            "ask_price": 1.0,
+            "bid_price": 1.02
+          },
+          {
+            "id": 2,
+            "source_market": "BINANCE",
+            "target_market": "COINBASE",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.45,
+            "ask_price": 91200.0,
+            "bid_price": 91610.6
+          },
+          {
+            "id": 3,
+            "source_market": "KRAKEN",
+            "target_market": "GEMINI",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.32,
+            "ask_price": 3120.0,
+            "bid_price": 3130.0
+          },
+          {
+            "id": 4,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0727,
+            "ask_price": 68600.1,
+            "bid_price": 68649.985
+          },
+          {
+            "id": 5,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0878,
+            "ask_price": 68472.315,
+            "bid_price": 68532.4
+          },
+          {
+            "id": 6,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0361,
+            "ask_price": 68597.455,
+            "bid_price": 68622.2
+          },
+          {
+            "id": 7,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.0139,
+            "ask_price": 1938.2,
+            "bid_price": 1938.47
+          },
+          {
+            "id": 8,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.044,
+            "ask_price": 79.56,
+            "bid_price": 79.595
+          },
+          {
+            "id": 9,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0645,
+            "ask_price": 68555.365,
+            "bid_price": 68599.6
+          },
+          {
+            "id": 10,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.0731,
+            "ask_price": 1935.965,
+            "bid_price": 1937.38
+          },
+          {
+            "id": 11,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.0377,
+            "ask_price": 79.49,
+            "bid_price": 79.52
+          },
+          {
+            "id": 12,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0148,
+            "ask_price": 68599.35,
+            "bid_price": 68609.5
+          },
+          {
+            "id": 13,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.0227,
+            "ask_price": 1937.38,
+            "bid_price": 1937.82
+          },
+          {
+            "id": 14,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.0692,
+            "ask_price": 79.495,
+            "bid_price": 79.55
+          },
+          {
+            "id": 15,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0572,
+            "ask_price": 68580.075,
+            "bid_price": 68619.3
+          },
+          {
+            "id": 16,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.0865,
+            "ask_price": 1937.165,
+            "bid_price": 1938.84
+          },
+          {
+            "id": 17,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.1132,
+            "ask_price": 79.52,
+            "bid_price": 79.61
+          },
+          {
+            "id": 18,
+            "source_market": "CISA_KEV_FEED",
+            "target_market": "ZOHO_MANAGEENGINE",
+            "asset_pair": "CVE-2019-8394",
+            "spread_percentage": 10.0,
+            "ask_price": 1.0,
+            "bid_price": 1.1
+          },
+          {
+            "id": 19,
+            "source_market": "CISA_KEV_FEED",
+            "target_market": "ZYXEL_MULTIPLE_PRODUCTS",
+            "asset_pair": "CVE-2020-29583",
+            "spread_percentage": 10.0,
+            "ask_price": 1.0,
+            "bid_price": 1.1
+          },
+          {
+            "id": 20,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0224,
+            "ask_price": 68538.0,
+            "bid_price": 68553.375
+          },
+          {
+            "id": 21,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.0793,
+            "ask_price": 1936.57,
+            "bid_price": 1938.105
+          },
+          {
+            "id": 22,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.0063,
+            "ask_price": 79.51,
+            "bid_price": 79.515
+          },
+          {
+            "id": 23,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0161,
+            "ask_price": 68519.995,
+            "bid_price": 68531.0
+          },
+          {
+            "id": 24,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.007,
+            "ask_price": 1936.595,
+            "bid_price": 1936.73
+          },
+          {
+            "id": 25,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.0063,
+            "ask_price": 79.49,
+            "bid_price": 79.495
+          }
+        ]
+      }
+    ]
+  },
+  "snapshot_sha256": "52b1a00e59babc686d655a7d9985ae9c20632bcfd60335d9830b0fde3ea6d181"
+}
