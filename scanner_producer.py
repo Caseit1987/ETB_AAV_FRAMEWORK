@@ -10,8 +10,8 @@ def fetch_json(url: str) -> dict:
 
 def scan_btc_spread(min_spread_pct: float = 0.01):
     # Fetch live spot quotes from Coinbase and Kraken public APIs
-    cb = fetch_json("https://coinbase.com")
-    kr = fetch_json("https://kraken.com")
+    cb = fetch_json("https://api.coinbase.com/v2/prices/BTC-USD/spot")
+    kr = fetch_json("https://api.kraken.com/0/public/Ticker?pair=XBTUSD")
 
     cb_price = float(cb["data"]["amount"])
     kr_price = float(kr["result"]["XXBTZUSD"]["c"][0])
