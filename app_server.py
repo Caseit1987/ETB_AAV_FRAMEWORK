@@ -244,67 +244,6 @@ async def serve_dashboard():
     table_rows = "".join(
         f"<tr><td>{r[0]}</td><td><strong>{r[3]}</strong></td><td>{r[1]}</td><td>{r[2]}</td>"
         f"<td>${r[5]:,.2f}</td><td>${r[6]:,.2f}</td><td style='color:#22c55e;'>+{r[4]}%</td>"
-Use code with caution.
-f"{'GATED' if r[7] else 'LEGACY'}"
-for r in rows
-)
-return f"""
-
-
-
-ETBV Bounded Gate Ledger
-
-
-body {{ background:#0b0f19; color:#e2e8f0; font-family:monospace; padding:20px; }}
-h1 {{ color:#38bdf8; font-size:18px; }}
-table {{ width:100%; border-collapse:collapse; background:#111827; }}
-th, td {{ padding:8px 10px; border-bottom:1px solid #1f2937; text-align:left; font-size:12px; }}
-th {{ background:#1e293b; color:#94a3b8; }}
-
-
-
-ETBV Bounded Approval & Ingestion Ledger
-{table_rows}
-
-ID	Pair	Source	Target	Ask	Bid	Spread	Provenance
-
-"""
-if name == "main":
-import uvicorn
-uvicorn.run(app, host="127.0.0.1", port=8000)
-uuid4()}",
-        "objects": [{
-            "type": "observed-data",
-            "spec_version": "2.1",
-            "id": f"observed-data--{uuid.uuid4()}",
-            "created": now_iso,
-            "modified": now_iso,
-            "first_observed": now_iso,
-            "last_observed": now_iso,
-            "number_observed": len(records),
-            "x_etbv_verified_vault_feed": records
-        }]
-    }
-
-@app.get("/api/v1/audit/snapshot")
-async def fetch_signed_audit_snapshot(token: str = Depends(verify_db_token)):
-    snapshot_path = "verification/artifacts/etbv_full_audit_snapshot.json"
-    if not os.path.exists(snapshot_path):
-        raise HTTPException(status_code=404, detail="AUDIT_SNAPSHOT_NOT_FOUND")
-    with open(snapshot_path, "r") as f:
-        return json.load(f)
-
-@app.get("/dashboard", response_class=HTMLResponse)
-async def serve_dashboard():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, source_market, target_market, asset_pair, spread_percentage, ask_price, bid_price, gated_nonce FROM arbitrage_feeds ORDER BY id DESC LIMIT 25")
-    rows = cursor.fetchall()
-    conn.close()
-
-    table_rows = "".join(
-        f"<tr><td>{r[0]}</td><td><strong>{r[3]}</strong></td><td>{r[1]}</td><td>{r[2]}</td>"
-        f"<td>${r[5]:,.2f}</td><td>${r[6]:,.2f}</td><td style='color:#22c55e;'>+{r[4]}%</td>"
         f"<td>{'GATED' if r[7] else 'LEGACY'}</td></tr>"
         for r in rows
     )

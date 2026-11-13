@@ -1,13 +1,12 @@
 {
-  "framework": "ETBV AAV LayerZero Framework",
-  "generated_at_utc": "2026-11-13T21:24:20.206412+00:00",
-  "gate_invariants": [
-    "PRE_PARSER_WIRE_CONTRACT_VALIDATION",
-    "GATE_PRIVATE_HMAC_SHA256_BINDING",
-    "SINGLE_USE_MONOTONIC_NONCE_5S_TTL",
-    "FAIL_CLOSED_EXECUTION_BOUNDARY"
-  ],
-  "non_bypassability_proofs": {
+  "framework": "ETBV Bounded Approval & Ingestion Prototype",
+  "generated_at_utc": "2026-11-13T21:30:50.878058+00:00",
+  "provenance_breakdown": {
+    "total_rows": 42,
+    "gated_hmac_commit_rows": 4,
+    "legacy_pre_gate_rows": 38
+  },
+  "boundary_proofs": {
     "etbv_trace_artifact.json": {
       "final_state": {
         "address": 16,
@@ -98,33 +97,32 @@
       }
     ],
     "live_http_gate_proof.json": {
-      "toctou_block": {
-        "http": 403,
-        "detail": "{\"detail\":\"DROP: TOCTOU_OR_FORGED_PAYLOAD\"}"
-      },
-      "replay_block": {
-        "http": 403,
-        "detail": "{\"detail\":\"DROP: REPLAY_OR_INVALID_NONCE\"}"
-      },
-      "atomic_allow": {
+      "revoked_token": 403,
+      "stream_cap": 413,
+      "atomic_commit": {
         "http": 200,
-        "detail": "{\"status\":\"VERIFIED_ATOMIC_EXECUTION\"}"
+        "before": 40,
+        "after": 41
+      },
+      "post_commit_replay": {
+        "http": 403,
+        "after": 41
       }
     }
   },
-  "live_stix21_telemetry_bundle": {
+  "stix21_bundle": {
     "type": "bundle",
-    "id": "bundle--12bcb0b8-7dd5-4b28-8542-bdb4ca1d15a6",
+    "id": "bundle--d813cef8-b78e-4abe-956e-3fca88ffa6fd",
     "objects": [
       {
         "type": "observed-data",
         "spec_version": "2.1",
-        "id": "observed-data--230030ab-c518-483c-acc1-ec811fb33f34",
-        "created": "2026-11-13T21:24:20.204589+00:00",
-        "modified": "2026-11-13T21:24:20.204589+00:00",
-        "first_observed": "2026-11-13T21:24:20.204589+00:00",
-        "last_observed": "2026-11-13T21:24:20.204589+00:00",
-        "number_observed": 38,
+        "id": "observed-data--de6b6822-a807-4a32-8dd3-5802d1619cfc",
+        "created": "2026-11-13T21:30:50.861927+00:00",
+        "modified": "2026-11-13T21:30:50.861927+00:00",
+        "first_observed": "2026-11-13T21:30:50.861927+00:00",
+        "last_observed": "2026-11-13T21:30:50.861927+00:00",
+        "number_observed": 42,
         "x_etbv_verified_vault_feed": [
           {
             "id": 1,
@@ -133,7 +131,8 @@
             "asset_pair": "USDT_USD",
             "spread_percentage": 2.45,
             "ask_price": 1.0,
-            "bid_price": 1.02
+            "bid_price": 1.02,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 2,
@@ -142,7 +141,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.45,
             "ask_price": 91200.0,
-            "bid_price": 91610.6
+            "bid_price": 91610.6,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 3,
@@ -151,7 +151,8 @@
             "asset_pair": "ETH/USD",
             "spread_percentage": 0.32,
             "ask_price": 3120.0,
-            "bid_price": 3130.0
+            "bid_price": 3130.0,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 4,
@@ -160,7 +161,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0727,
             "ask_price": 68600.1,
-            "bid_price": 68649.985
+            "bid_price": 68649.985,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 5,
@@ -169,7 +171,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0878,
             "ask_price": 68472.315,
-            "bid_price": 68532.4
+            "bid_price": 68532.4,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 6,
@@ -178,7 +181,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0361,
             "ask_price": 68597.455,
-            "bid_price": 68622.2
+            "bid_price": 68622.2,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 7,
@@ -187,7 +191,8 @@
             "asset_pair": "ETH/USD",
             "spread_percentage": 0.0139,
             "ask_price": 1938.2,
-            "bid_price": 1938.47
+            "bid_price": 1938.47,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 8,
@@ -196,7 +201,8 @@
             "asset_pair": "SOL/USD",
             "spread_percentage": 0.044,
             "ask_price": 79.56,
-            "bid_price": 79.595
+            "bid_price": 79.595,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 9,
@@ -205,7 +211,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0645,
             "ask_price": 68555.365,
-            "bid_price": 68599.6
+            "bid_price": 68599.6,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 10,
@@ -214,7 +221,8 @@
             "asset_pair": "ETH/USD",
             "spread_percentage": 0.0731,
             "ask_price": 1935.965,
-            "bid_price": 1937.38
+            "bid_price": 1937.38,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 11,
@@ -223,7 +231,8 @@
             "asset_pair": "SOL/USD",
             "spread_percentage": 0.0377,
             "ask_price": 79.49,
-            "bid_price": 79.52
+            "bid_price": 79.52,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 12,
@@ -232,7 +241,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0148,
             "ask_price": 68599.35,
-            "bid_price": 68609.5
+            "bid_price": 68609.5,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 13,
@@ -241,7 +251,8 @@
             "asset_pair": "ETH/USD",
             "spread_percentage": 0.0227,
             "ask_price": 1937.38,
-            "bid_price": 1937.82
+            "bid_price": 1937.82,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 14,
@@ -250,7 +261,8 @@
             "asset_pair": "SOL/USD",
             "spread_percentage": 0.0692,
             "ask_price": 79.495,
-            "bid_price": 79.55
+            "bid_price": 79.55,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 15,
@@ -259,7 +271,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0572,
             "ask_price": 68580.075,
-            "bid_price": 68619.3
+            "bid_price": 68619.3,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 16,
@@ -268,7 +281,8 @@
             "asset_pair": "ETH/USD",
             "spread_percentage": 0.0865,
             "ask_price": 1937.165,
-            "bid_price": 1938.84
+            "bid_price": 1938.84,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 17,
@@ -277,7 +291,8 @@
             "asset_pair": "SOL/USD",
             "spread_percentage": 0.1132,
             "ask_price": 79.52,
-            "bid_price": 79.61
+            "bid_price": 79.61,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 18,
@@ -286,7 +301,8 @@
             "asset_pair": "CVE-2019-8394",
             "spread_percentage": 10.0,
             "ask_price": 1.0,
-            "bid_price": 1.1
+            "bid_price": 1.1,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 19,
@@ -295,7 +311,8 @@
             "asset_pair": "CVE-2020-29583",
             "spread_percentage": 10.0,
             "ask_price": 1.0,
-            "bid_price": 1.1
+            "bid_price": 1.1,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 20,
@@ -304,7 +321,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0224,
             "ask_price": 68538.0,
-            "bid_price": 68553.375
+            "bid_price": 68553.375,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 21,
@@ -313,7 +331,8 @@
             "asset_pair": "ETH/USD",
             "spread_percentage": 0.0793,
             "ask_price": 1936.57,
-            "bid_price": 1938.105
+            "bid_price": 1938.105,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 22,
@@ -322,7 +341,8 @@
             "asset_pair": "SOL/USD",
             "spread_percentage": 0.0063,
             "ask_price": 79.51,
-            "bid_price": 79.515
+            "bid_price": 79.515,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 23,
@@ -331,7 +351,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0161,
             "ask_price": 68519.995,
-            "bid_price": 68531.0
+            "bid_price": 68531.0,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 24,
@@ -340,7 +361,8 @@
             "asset_pair": "ETH/USD",
             "spread_percentage": 0.007,
             "ask_price": 1936.595,
-            "bid_price": 1936.73
+            "bid_price": 1936.73,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 25,
@@ -349,7 +371,8 @@
             "asset_pair": "SOL/USD",
             "spread_percentage": 0.0063,
             "ask_price": 79.49,
-            "bid_price": 79.495
+            "bid_price": 79.495,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 26,
@@ -358,7 +381,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0221,
             "ask_price": 68468.4,
-            "bid_price": 68483.525
+            "bid_price": 68483.525,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 27,
@@ -367,7 +391,8 @@
             "asset_pair": "SOL/USD",
             "spread_percentage": 0.0252,
             "ask_price": 79.45,
-            "bid_price": 79.47
+            "bid_price": 79.47,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 28,
@@ -376,7 +401,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0146,
             "ask_price": 68419.6,
-            "bid_price": 68429.615
+            "bid_price": 68429.615,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 29,
@@ -385,7 +411,8 @@
             "asset_pair": "ETH/USD",
             "spread_percentage": 0.023,
             "ask_price": 1934.41,
-            "bid_price": 1934.855
+            "bid_price": 1934.855,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 30,
@@ -394,7 +421,8 @@
             "asset_pair": "SOL/USD",
             "spread_percentage": 0.0315,
             "ask_price": 79.395,
-            "bid_price": 79.42
+            "bid_price": 79.42,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 31,
@@ -403,7 +431,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0347,
             "ask_price": 68437.26,
-            "bid_price": 68461.0
+            "bid_price": 68461.0,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 32,
@@ -412,7 +441,8 @@
             "asset_pair": "ETH/USD",
             "spread_percentage": 0.0398,
             "ask_price": 1933.79,
-            "bid_price": 1934.56
+            "bid_price": 1934.56,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 33,
@@ -421,7 +451,8 @@
             "asset_pair": "SOL/USD",
             "spread_percentage": 0.0378,
             "ask_price": 79.37,
-            "bid_price": 79.4
+            "bid_price": 79.4,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 34,
@@ -430,7 +461,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0145,
             "ask_price": 68354.2,
-            "bid_price": 68364.115
+            "bid_price": 68364.115,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 35,
@@ -439,7 +471,8 @@
             "asset_pair": "ETH/USD",
             "spread_percentage": 0.0559,
             "ask_price": 1930.34,
-            "bid_price": 1931.42
+            "bid_price": 1931.42,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 36,
@@ -448,7 +481,8 @@
             "asset_pair": "SOL/USD",
             "spread_percentage": 0.1074,
             "ask_price": 79.13,
-            "bid_price": 79.215
+            "bid_price": 79.215,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 37,
@@ -457,7 +491,8 @@
             "asset_pair": "BTC/USD",
             "spread_percentage": 0.0339,
             "ask_price": 68251.785,
-            "bid_price": 68274.9
+            "bid_price": 68274.9,
+            "provenance": "LEGACY_PRE_GATE"
           },
           {
             "id": 38,
@@ -466,11 +501,52 @@
             "asset_pair": "ETH/USD",
             "spread_percentage": 0.0384,
             "ask_price": 1927.85,
-            "bid_price": 1928.59
+            "bid_price": 1928.59,
+            "provenance": "LEGACY_PRE_GATE"
+          },
+          {
+            "id": 39,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0115,
+            "ask_price": 68306.945,
+            "bid_price": 68314.8,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 40,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.0414,
+            "ask_price": 1930.14,
+            "bid_price": 1930.94,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 41,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.05,
+            "ask_price": 68500.0,
+            "bid_price": 68534.25,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 42,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.0189,
+            "ask_price": 79.28,
+            "bid_price": 79.295,
+            "provenance": "GATED_HMAC_COMMIT"
           }
         ]
       }
     ]
   },
-  "snapshot_sha256": "bb3e6e4dcb898e7203f981019f85793589a1a28e7f72f81523456382be679945"
+  "hmac_sha256_signature": "110c6d075b9f3d937948a7ecdfd71a6fee917b5fe217733baf5e2499488abb7e"
 }

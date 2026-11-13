@@ -1,14 +1,13 @@
 {
-  "toctou_block": {
-    "http": 403,
-    "detail": "{\"detail\":\"DROP: TOCTOU_OR_FORGED_PAYLOAD\"}"
-  },
-  "replay_block": {
-    "http": 403,
-    "detail": "{\"detail\":\"DROP: REPLAY_OR_INVALID_NONCE\"}"
-  },
-  "atomic_allow": {
+  "revoked_token": 403,
+  "stream_cap": 413,
+  "atomic_commit": {
     "http": 200,
-    "detail": "{\"status\":\"VERIFIED_ATOMIC_EXECUTION\"}"
+    "before": 40,
+    "after": 41
+  },
+  "post_commit_replay": {
+    "http": 403,
+    "after": 41
   }
 }
