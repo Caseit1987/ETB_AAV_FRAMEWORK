@@ -3,11 +3,17 @@
   "stream_cap": 413,
   "atomic_commit": {
     "http": 200,
-    "before": 40,
-    "after": 41
+    "before": 42,
+    "after": 43
   },
   "post_commit_replay": {
     "http": 403,
-    "after": 41
+    "after": 43
+  },
+  "slow_body_deadline_block": {
+    "http": 403,
+    "detail": "{\"detail\":\"DROP: COMMIT_DEADLINE_EXPIRED\"}",
+    "db_rows_before": 43,
+    "db_rows_after": 43
   }
 }
