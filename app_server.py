@@ -319,3 +319,11 @@ async def serve_dashboard():
     </body>
     </html>
     """
+
+@app.get("/api/v1/audit/snapshot")
+async def fetch_signed_audit_snapshot(token: str = Depends(verify_db_token)):
+    snapshot_path = "verification/artifacts/etbv_full_audit_snapshot.json"
+    if not os.path.exists(snapshot_path):
+        raise HTTPException(status_code=404, detail="AUDIT_SNAPSHOT_NOT_FOUND")
+    with open(snapshot_path, "r") as f:
+        return json.load(f)
