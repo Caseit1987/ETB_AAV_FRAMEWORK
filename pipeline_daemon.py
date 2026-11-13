@@ -2,16 +2,18 @@ import os
 import time
 import traceback
 from scanner_producer import scan_all_pairs
+from threat_intel_producer import ingest_latest_cves
 from n8n_telemetry_bridge import fetch_verified_vault_rows, build_stix_bundle, dispatch_to_n8n, N8N_WEBHOOK_URL
 
 POLL_SECONDS = float(os.getenv("ETBV_POLL_SECONDS", "60"))
 
 def run_loop():
     token = os.environ["ETB_MASTER_TOKEN"]
-    print(f"[DAEMON] Starting ETBV multi-pair pipeline loop (interval: {POLL_SECONDS}s)...", flush=True)
+    print(f"[DAEMON] Starting ETBV Dual-Feed Pipeline Loop (interval: {POLL_SECONDS}s)...", flush=True)
     while True:
         try:
             scan_all_pairs(min_spread_pct=0.001)
+            ingest_latest_cves(limit=2)
             rows = fetch_verified_vault_rows(token)
             bundle = build_stix_bundle(rows)
             dispatch_to_n8n(bundle, N8N_WEBHOOK_URL)
