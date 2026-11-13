@@ -49,7 +49,7 @@ def run_loop():
 
             new_alerts = []
             for r in rows:
-                row_id, source_mkt, target_mkt, asset_pair, spread_pct, ask_px, bid_px = r
+                row_id, source_mkt, target_mkt, asset_pair, spread_pct, ask_px, bid_px, gated_nonce = r
                 if row_id in seen_alert_ids:
                     continue
                 seen_alert_ids.add(row_id)
