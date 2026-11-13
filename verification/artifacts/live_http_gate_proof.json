@@ -3,17 +3,28 @@
   "stream_cap": 413,
   "atomic_commit": {
     "http": 200,
-    "before": 43,
-    "after": 44
+    "before": 50,
+    "after": 51
   },
   "post_commit_replay": {
     "http": 403,
-    "after": 44
+    "after": 51
   },
   "slow_body_deadline_block": {
     "http": 403,
     "detail": "{\"detail\":\"DROP: COMMIT_DEADLINE_EXPIRED\"}",
-    "db_rows_before": 44,
-    "db_rows_after": 44
+    "db_rows_before": 51,
+    "db_rows_after": 51
+  },
+  "concurrent_race_8x": {
+    "wins_200": 1,
+    "blocks_403": 7,
+    "db_rows_before": 51,
+    "db_rows_after": 52
+  },
+  "audit_signature_verify": {
+    "valid_http": 200,
+    "tampered_http": 403,
+    "tampered_detail": "{\"detail\":\"DROP: AUDIT_HMAC_SIGNATURE_MISMATCH\"}"
   }
 }

@@ -254,6 +254,31 @@ th{{background:#1e293b;color:#94a3b8}}</style></head><body><h1>ETBV Bounded Appr
 <table><thead><tr><th>ID</th><th>Pair</th><th>Source</th><th>Target</th><th>Ask</th><th>Bid</th><th>Spread</th><th>Provenance</th></tr></thead>
 <tbody>{table_rows}</tbody></table></body></html>"""
 
+@app.post("/api/v1/audit/verify")
+async def verify_signed_audit_snapshot(request: Request, token: str = Depends(verify_db_token)):
+    raw_bytes = await read_bounded_stream(request, max_bytes=262144)
+    try:
+        snapshot = json.loads(raw_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        raise HTTPException(status_code=400, detail="DROP: INVALID_SNAPSHOT_JSON")
+
+    provided_sig = snapshot.pop("hmac_sha256_signature", None)
+    if not provided_sig or not isinstance(provided_sig, str):
+        raise HTTPException(status_code=400, detail="DROP: MISSING_HMAC_SIGNATURE")
+
+    signing_key = os.environ["ETB_AUDIT_SIGNING_KEY"].encode("utf-8")
+    canonical = json.dumps(snapshot, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    expected_sig = hmac.new(signing_key, canonical, hashlib.sha256).hexdigest()
+
+    if not hmac.compare_digest(expected_sig, provided_sig):
+        raise HTTPException(status_code=403, detail="DROP: AUDIT_HMAC_SIGNATURE_MISMATCH")
+
+    return {
+        "status": "SIGNATURE_VERIFIED",
+        "verified_signature": provided_sig,
+        "provenance_breakdown": snapshot.get("provenance_breakdown")
+    }
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
