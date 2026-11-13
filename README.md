@@ -1,6 +1,6 @@
 # ETBV Bounded Approval & Ingestion Gate
 
-**Eternal Trust Boundary Validation (ETBV)** is a bounded HTTP approval-and-ingestion architecture that enforces streaming payload size limits, schema/numeric invariants, and single-transaction commit deadlines before writing external records to SQLite.
+**Eternal Trust Boundary Validation (ETBV)** is a bounded HTTP approval-and-ingestion architecture that enforces streaming payload size limits, schema/numeric invariants, single-transaction commit deadlines, and SQLite engine-level insert triggers before external records persist to storage.
 
 ---
 
@@ -10,14 +10,18 @@
 * **Durable Single-Transaction Nonce & Commit (`BEGIN IMMEDIATE`):**
   * `POST /api/v1/gate/approve` binds a single-use nonce and `HMAC-SHA256` digest to the exact approved payload bytes with a **5-second monotonic deadline** stored in SQLite (`approved_nonces`).
   * `POST /api/v1/ingest/arbitrage` verifies the digest after full stream delivery, checks the monotonic deadline inside a `BEGIN IMMEDIATE` SQLite transaction, atomically deletes the nonce, and inserts the row in one durable transaction.
+* **Database-Level Write Isolation (`trg_require_gated_nonce`):**
+  * Enforces owner-only file permissions (`chmod 600`) on `monetization_vault.db`.
+  * Installs a SQLite `BEFORE INSERT` trigger (`trg_require_gated_nonce`) that raises `ABORT: DIRECT_UNGATED_INSERT_BLOCKED` on any row lacking a 32-character `gated_nonce`, blocking out-of-band local scripts from bypassing the gate.
 * **Database-Verified Boundary & Concurrency Suite (`verification/test_live_gate.py`):**
   * **Credential Revocation (`TEST 1`):** Verifies legacy hardcoded tokens return `HTTP 403`.
   * **Chunked Streaming Byte Cap (`TEST 2`):** Verifies `>4,096`-byte streams abort with `HTTP 413` prior to buffering.
-  * **Atomic Single-Transaction Commit (`TEST 3`):** Verifies valid approval commits cleanly (`HTTP 200`, `+1` SQLite row).
-  * **Post-Commit Nonce Replay (`TEST 4`):** Verifies replay of a nonce consumed by a successful commit returns `HTTP 403` with `0` SQLite row change.
-  * **Slow-Body Commit Deadline (`TEST 6`):** Verifies slow body delivery past the 5-second deadline fails at the commit boundary (`HTTP 403`, `0` SQLite row change).
-  * **8-Thread Concurrent Race Condition (`TEST 7`):** Fires 8 parallel requests with the same approved nonce; `BEGIN IMMEDIATE` serializes execution so `1` succeeds (`HTTP 200`, `+1` row) and `7` fail (`HTTP 403`).
-  * **Keyed HMAC Signature Verification (`TEST 8`):** Verifies valid audit packages return `HTTP 200` (`SIGNATURE_VERIFIED`) while tampered payloads fail with `HTTP 403` (`DROP: AUDIT_HMAC_SIGNATURE_MISMATCH`).
+  * **Atomic Single-Transaction Commit (`TEST 3`):** Verifies valid approval commits cleanly (`HTTP 200`, `+1` SQLite row attributed to its specific nonce).
+  * **Post-Commit Nonce Replay (`TEST 4`):** Verifies replay of a nonce consumed by a successful commit returns `HTTP 403` with `0` additional SQLite rows for that nonce.
+  * **Slow-Body Commit Deadline (`TEST 5`):** Verifies slow body delivery past the 5-second deadline fails at the commit boundary (`HTTP 403`, `0` SQLite rows for that nonce).
+  * **8-Thread Concurrent Race Condition (`TEST 6`):** Fires 8 parallel requests with the same approved nonce; `BEGIN IMMEDIATE` serializes execution so `1` succeeds (`HTTP 200`, `1` row) and `7` fail (`HTTP 403`).
+  * **Keyed HMAC Signature Verification (`TEST 7`):** Verifies valid audit packages return `HTTP 200` (`SIGNATURE_VERIFIED`) while tampered payloads fail with `HTTP 403`.
+  * **SQLite Trigger Isolation (`TEST 8`):** Verifies direct out-of-band `INSERT` queries without a 32-character `gated_nonce` abort with `DIRECT_UNGATED_INSERT_BLOCKED`.
 * **Dual-Feed Producers & Keyed Audit Snapshot (`etbv_client.py`):**
   * `scanner_producer.py` & `threat_intel_producer.py`: Automated cross-exchange quote scanner (`BTC/USD`, `ETH/USD`, `SOL/USD`) and deduplicated CISA KEV advisory producer.
   * `export_audit_snapshot.py`: Separates legacy pre-gate rows (`LEGACY_PRE_GATE`) from cryptographically bound commits (`GATED_HMAC_COMMIT`), packages STIX 2.1 `observed-data` telemetry, and signs the canonical snapshot using a keyed `HMAC-SHA256` secret (`ETB_AUDIT_SIGNING_KEY`).

@@ -146,3 +146,21 @@ with open("verification/artifacts/live_http_gate_proof.json", "w") as f:
         "concurrent_race_8x": {"wins_200": wins, "blocks_403": blocks, "nonce": nonce_race, "db_rows_for_nonce": rows_after_race},
         "audit_hmac_verify": {"valid_http": c7_ok, "tampered_http": c7_bad}
     }, f, indent=2)
+
+# Test 8: Direct out-of-band SQLite insert without 32-char gated_nonce must abort at trigger level
+conn_oob = sqlite3.connect(DB_PATH)
+try:
+    conn_oob.execute("INSERT INTO arbitrage_feeds (source_market, target_market, asset_pair, spread_percentage, ask_price, bid_price) VALUES ('OOB', 'OOB', 'BTC/USD', 1.0, 1.0, 2.0)")
+    assert False, "SQLite trigger failed to block ungated insert"
+except sqlite3.IntegrityError as e:
+    trigger_msg = str(e)
+    print(f"[TEST 8 - SQLITE TRIGGER ISOLATION] Aborted by DB engine -> {trigger_msg}")
+    assert "DIRECT_UNGATED_INSERT_BLOCKED" in trigger_msg
+finally:
+    conn_oob.close()
+
+with open("verification/artifacts/live_http_gate_proof.json", "r") as f:
+    proof = json.load(f)
+proof["sqlite_trigger_isolation"] = {"aborted": True, "error": trigger_msg}
+with open("verification/artifacts/live_http_gate_proof.json", "w") as f:
+    json.dump(proof, f, indent=2)

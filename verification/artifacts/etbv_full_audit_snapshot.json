@@ -1,9 +1,9 @@
 {
   "framework": "ETBV Bounded Approval & Ingestion Prototype",
-  "generated_at_utc": "2026-11-13T21:40:27.394065+00:00",
+  "generated_at_utc": "2026-11-13T21:46:45.296588+00:00",
   "provenance_breakdown": {
-    "total_rows": 60,
-    "gated_hmac_commit_rows": 22,
+    "total_rows": 71,
+    "gated_hmac_commit_rows": 33,
     "legacy_pre_gate_rows": 38
   },
   "boundary_proofs": {
@@ -106,44 +106,48 @@
       },
       "atomic_commit": {
         "http": 200,
-        "nonce": "4f5631a5bdd713db7b26f08d2d8daa1a",
+        "nonce": "4f85bd86217e8823caca6f49dfde9179",
         "db_rows_for_nonce": 1
       },
       "post_commit_replay": {
         "http": 403,
-        "nonce": "4f5631a5bdd713db7b26f08d2d8daa1a",
+        "nonce": "4f85bd86217e8823caca6f49dfde9179",
         "db_rows_for_nonce": 1
       },
       "slow_body_deadline": {
         "http": 403,
-        "nonce": "18a1e79e29bec661cc6dd8ae9eab988a",
+        "nonce": "ebf11f74af7a25143cd0fd942e4ceae4",
         "db_rows_for_nonce": 0
       },
       "concurrent_race_8x": {
         "wins_200": 1,
         "blocks_403": 7,
-        "nonce": "0b8377d38389c9b82653637b1a77d6fa",
+        "nonce": "9640c9087ba493728adbd8ccedd34990",
         "db_rows_for_nonce": 1
       },
       "audit_hmac_verify": {
         "valid_http": 200,
         "tampered_http": 403
+      },
+      "sqlite_trigger_isolation": {
+        "aborted": true,
+        "error": "DIRECT_UNGATED_INSERT_BLOCKED"
       }
     }
   },
   "stix21_bundle": {
     "type": "bundle",
-    "id": "bundle--798b4e56-3b48-435a-af97-912f31414fee",
+    "id": "bundle--a37efb34-149b-4c5e-8163-0384aeb78646",
     "objects": [
       {
         "type": "observed-data",
         "spec_version": "2.1",
-        "id": "observed-data--ba3a89bb-2fc4-4702-b163-f10cb00aba1a",
-        "created": "2026-11-13T21:40:27.376400+00:00",
-        "modified": "2026-11-13T21:40:27.376400+00:00",
-        "first_observed": "2026-11-13T21:40:27.376400+00:00",
-        "last_observed": "2026-11-13T21:40:27.376400+00:00",
-        "number_observed": 60,
+        "id": "observed-data--faf6468e-2f68-4c2a-893c-7dc49742032b",
+        "created": "2026-11-13T21:46:45.282138+00:00",
+        "modified": "2026-11-13T21:46:45.282138+00:00",
+        "first_observed": "2026-11-13T21:46:45.282138+00:00",
+        "last_observed": "2026-11-13T21:46:45.282138+00:00",
+        "number_observed": 71,
         "x_etbv_verified_vault_feed": [
           {
             "id": 1,
@@ -744,10 +748,120 @@
             "ask_price": 68500.0,
             "bid_price": 68534.25,
             "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 61,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0323,
+            "ask_price": 68068.035,
+            "bid_price": 68090.0,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 62,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.0055,
+            "ask_price": 1920.255,
+            "bid_price": 1920.36,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 63,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.0888,
+            "ask_price": 78.8,
+            "bid_price": 78.87,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 64,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0468,
+            "ask_price": 68030.255,
+            "bid_price": 68062.1,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 65,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.1001,
+            "ask_price": 1918.72,
+            "bid_price": 1920.64,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 66,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.0699,
+            "ask_price": 78.635,
+            "bid_price": 78.69,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 67,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0687,
+            "ask_price": 68049.955,
+            "bid_price": 68096.7,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 68,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.0503,
+            "ask_price": 1918.945,
+            "bid_price": 1919.91,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 69,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.0064,
+            "ask_price": 78.59,
+            "bid_price": 78.595,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 70,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.05,
+            "ask_price": 68500.0,
+            "bid_price": 68534.25,
+            "provenance": "GATED_HMAC_COMMIT"
+          },
+          {
+            "id": 71,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.05,
+            "ask_price": 68500.0,
+            "bid_price": 68534.25,
+            "provenance": "GATED_HMAC_COMMIT"
           }
         ]
       }
     ]
   },
-  "hmac_sha256_signature": "1c1cc98968d790af8ad294e048b2c007906a96ca851d73a07eb5df64ab25ed64"
+  "hmac_sha256_signature": "37350dbfb33fba3b781b028d7f7c7f69beb8b26d522f646fae0861c3184be7c8"
 }

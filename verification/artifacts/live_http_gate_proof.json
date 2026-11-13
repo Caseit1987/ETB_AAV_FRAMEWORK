@@ -8,27 +8,31 @@
   },
   "atomic_commit": {
     "http": 200,
-    "nonce": "4f5631a5bdd713db7b26f08d2d8daa1a",
+    "nonce": "4f85bd86217e8823caca6f49dfde9179",
     "db_rows_for_nonce": 1
   },
   "post_commit_replay": {
     "http": 403,
-    "nonce": "4f5631a5bdd713db7b26f08d2d8daa1a",
+    "nonce": "4f85bd86217e8823caca6f49dfde9179",
     "db_rows_for_nonce": 1
   },
   "slow_body_deadline": {
     "http": 403,
-    "nonce": "18a1e79e29bec661cc6dd8ae9eab988a",
+    "nonce": "ebf11f74af7a25143cd0fd942e4ceae4",
     "db_rows_for_nonce": 0
   },
   "concurrent_race_8x": {
     "wins_200": 1,
     "blocks_403": 7,
-    "nonce": "0b8377d38389c9b82653637b1a77d6fa",
+    "nonce": "9640c9087ba493728adbd8ccedd34990",
     "db_rows_for_nonce": 1
   },
   "audit_hmac_verify": {
     "valid_http": 200,
     "tampered_http": 403
+  },
+  "sqlite_trigger_isolation": {
+    "aborted": true,
+    "error": "DIRECT_UNGATED_INSERT_BLOCKED"
   }
 }
