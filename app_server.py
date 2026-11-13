@@ -12,7 +12,7 @@ from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel, ValidationError
 
 app = FastAPI(title="ETBV Bounded Approval & Ingestion Gate")
-DB_PATH = "/data/data/com.termux/files/home/monetization_vault.db"
+DB_PATH = os.getenv("ETBV_DB_PATH", "/data/data/com.termux/files/home/monetization_vault.db")
 api_key_header = APIKeyHeader(name="X-API-Token", auto_error=True)
 
 GATE_SECRET = os.urandom(32)
@@ -291,4 +291,4 @@ async def verify_signed_audit_snapshot(request: Request, token: str = Depends(ve
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=int(os.getenv("ETBV_PORT", "8000")))
