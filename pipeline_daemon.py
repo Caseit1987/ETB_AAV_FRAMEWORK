@@ -49,19 +49,17 @@ def run_loop():
 
             new_alerts = []
             for r in rows:
-                row_id = next(iter(r))
+                row_id, source_mkt, target_mkt, asset_pair, spread_pct, ask_px, bid_px = r
                 if row_id in seen_alert_ids:
                     continue
                 seen_alert_ids.add(row_id)
-                asset_pair = str(r)
-                spread_pct = float(r)
-                if asset_pair.startswith("CVE-") or spread_pct >= ALERT_SPREAD_THRESHOLD:
+                if str(asset_pair).startswith("CVE-") or float(spread_pct) >= ALERT_SPREAD_THRESHOLD:
                     new_alerts.append({
                         "vault_id": row_id,
-                        "source": r,
-                        "target": r,
-                        "asset_pair": asset_pair,
-                        "spread_percentage": spread_pct
+                        "source": source_mkt,
+                        "target": target_mkt,
+                        "asset_pair": str(asset_pair),
+                        "spread_percentage": float(spread_pct)
                     })
 
             dispatch_priority_alert(new_alerts)

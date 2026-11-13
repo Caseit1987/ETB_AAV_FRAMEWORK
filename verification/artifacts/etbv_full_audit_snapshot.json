@@ -1,6 +1,6 @@
 {
   "framework": "ETBV AAV LayerZero Framework",
-  "generated_at_utc": "2026-11-13T21:14:59.577001+00:00",
+  "generated_at_utc": "2026-11-13T21:17:25.267987+00:00",
   "gate_invariants": [
     "PRE_PARSER_WIRE_CONTRACT_VALIDATION",
     "GATE_PRIVATE_HMAC_SHA256_BINDING",
@@ -114,17 +114,17 @@
   },
   "live_stix21_telemetry_bundle": {
     "type": "bundle",
-    "id": "bundle--941cc833-4018-4474-b130-26dc685fa61e",
+    "id": "bundle--9646a0a2-bd44-4292-bf69-ddd8cbe53fcd",
     "objects": [
       {
         "type": "observed-data",
         "spec_version": "2.1",
-        "id": "observed-data--252ad13a-ee0c-40ff-8b49-b1922ac71f91",
-        "created": "2026-11-13T21:14:59.573438+00:00",
-        "modified": "2026-11-13T21:14:59.573438+00:00",
-        "first_observed": "2026-11-13T21:14:59.573438+00:00",
-        "last_observed": "2026-11-13T21:14:59.573438+00:00",
-        "number_observed": 25,
+        "id": "observed-data--505f0b93-c019-4175-af55-9d8b6af7abe1",
+        "created": "2026-11-13T21:17:25.266063+00:00",
+        "modified": "2026-11-13T21:17:25.266063+00:00",
+        "first_observed": "2026-11-13T21:17:25.266063+00:00",
+        "last_observed": "2026-11-13T21:17:25.266063+00:00",
+        "number_observed": 33,
         "x_etbv_verified_vault_feed": [
           {
             "id": 1,
@@ -350,10 +350,82 @@
             "spread_percentage": 0.0063,
             "ask_price": 79.49,
             "bid_price": 79.495
+          },
+          {
+            "id": 26,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0221,
+            "ask_price": 68468.4,
+            "bid_price": 68483.525
+          },
+          {
+            "id": 27,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.0252,
+            "ask_price": 79.45,
+            "bid_price": 79.47
+          },
+          {
+            "id": 28,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0146,
+            "ask_price": 68419.6,
+            "bid_price": 68429.615
+          },
+          {
+            "id": 29,
+            "source_market": "KRAKEN",
+            "target_market": "COINBASE",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.023,
+            "ask_price": 1934.41,
+            "bid_price": 1934.855
+          },
+          {
+            "id": 30,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.0315,
+            "ask_price": 79.395,
+            "bid_price": 79.42
+          },
+          {
+            "id": 31,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "BTC/USD",
+            "spread_percentage": 0.0347,
+            "ask_price": 68437.26,
+            "bid_price": 68461.0
+          },
+          {
+            "id": 32,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "ETH/USD",
+            "spread_percentage": 0.0398,
+            "ask_price": 1933.79,
+            "bid_price": 1934.56
+          },
+          {
+            "id": 33,
+            "source_market": "COINBASE",
+            "target_market": "KRAKEN",
+            "asset_pair": "SOL/USD",
+            "spread_percentage": 0.0378,
+            "ask_price": 79.37,
+            "bid_price": 79.4
           }
         ]
       }
     ]
   },
-  "snapshot_sha256": "52b1a00e59babc686d655a7d9985ae9c20632bcfd60335d9830b0fde3ea6d181"
+  "snapshot_sha256": "cf3a97979502f6f0cd97032b2874de4c164f5dfec059846ee74adc22d0f67a3d"
 }
