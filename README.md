@@ -54,3 +54,11 @@ chmod +x install.sh
 | `POST` | `/api/v1/audit/verify` | `X-API-Token` | Recomputes canonical `HMAC-SHA256` against `ETB_AUDIT_SIGNING_KEY` to verify any exported snapshot. |
 | `GET` | `/api/v1/daas/valuations` | `X-API-Token` | Returns raw database rows including `gated_nonce` provenance. |
 | `GET` | `/dashboard` | Local | Auto-refreshing HTML ledger displaying provenance status for the latest 25 records. |
+
+---
+
+## Trust Boundary & Scope Assumptions
+
+* **Trusted Host / Same-UID Model:** This prototype runs under a single OS user ID (`Termux` user). Processes sharing the same UID and filesystem permissions are treated as trusted components of the host boundary.
+* **Role of SQLite Trigger (`trg_require_gated_nonce`):** The `BEFORE INSERT` trigger prevents accidental out-of-band writes from local scripts using standard `INSERT` statements; it is an integrity guardrail, not a substitute for separate OS user privileges or a networked database server against a malicious same-UID actor.
+* **Durability:** Ingestion transactions execute with `BEGIN IMMEDIATE` and `PRAGMA synchronous = FULL` so committed rows are flushed prior to returning `HTTP 200`.

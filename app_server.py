@@ -151,6 +151,7 @@ async def receive_arbitrage_signal(
 
     # Single durable transaction: verify deadline, consume nonce, and insert row atomically
     conn = sqlite3.connect(DB_PATH, isolation_level=None)
+    conn.execute("PRAGMA synchronous = FULL")
     cursor = conn.cursor()
     try:
         cursor.execute("BEGIN IMMEDIATE")

@@ -31,3 +31,7 @@
 | `GET` | `/api/v1/stix/bundle` | Returns STIX 2.1 `observed-data` bundle tagging `GATED_HMAC_COMMIT` vs. `LEGACY_PRE_GATE` provenance. |
 | `GET` | `/api/v1/audit/snapshot` | Returns the keyed `HMAC-SHA256` signed audit snapshot and boundary proof artifacts. |
 | `POST` | `/api/v1/audit/verify` | Recomputes canonical `HMAC-SHA256` to verify any exported audit snapshot. |
+
+## 4. Explicit Trust Boundary & Scope
+* **Trusted Same-UID Host:** Same-UID processes share filesystem access to `monetization_vault.db` and `.env` and are explicitly within the trusted computing base.
+* **Scope of SQLite Guardrails:** `trg_require_gated_nonce` enforces schema provenance against accidental out-of-band writes; enforcing adversarial isolation against local processes requires running the database under a separate OS user or remote service boundary.
