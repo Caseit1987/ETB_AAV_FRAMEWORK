@@ -1,4 +1,5 @@
 import os
+import time
 import hmac
 import hashlib
 import sqlite3
@@ -11,9 +12,10 @@ app = FastAPI(title="Eternal Trust Engine - LayerZero Hardened")
 DB_PATH = "/data/data/com.termux/files/home/monetization_vault.db"
 api_key_header = APIKeyHeader(name="X-API-Token", auto_error=True)
 
-# Ephemeral Gate-Private Secret & Single-Use Nonce Store
+# Ephemeral Gate-Private Secret & Single-Use Nonce Store with 5s TTL
 GATE_SECRET = os.urandom(32)
-ACTIVE_NONCES = set()
+NONCE_TTL_SECONDS = 5.0
+ACTIVE_NONCES = {}  # nonce -> monotonic_expiry
 
 class ArbitragePayload(BaseModel):
     source_market: str
@@ -22,6 +24,11 @@ class ArbitragePayload(BaseModel):
     spread_percentage: float
     ask_price: float
     bid_price: float
+
+def purge_expired_nonces(now: float):
+    expired = [n for n, exp in ACTIVE_NONCES.items() if now > exp]
+    for n in expired:
+        del ACTIVE_NONCES[n]
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
@@ -61,11 +68,12 @@ init_db()
 
 @app.post("/api/v1/gate/approve")
 async def gate_approve_payload(request: Request, token: str = Depends(verify_db_token)):
+    now = time.monotonic()
+    purge_expired_nonces(now)
+
     raw_bytes = await request.body()
-    # Invariant 1: Fail-closed on oversized or empty raw wire frames
     if not raw_bytes or len(raw_bytes) > 4096:
         raise HTTPException(status_code=400, detail="DROP: WIRE_FRAME_BOUNDARY_VIOLATION")
-    # Invariant 2: Strict schema and domain bounds check before signing
     try:
         data = json.loads(raw_bytes.decode("utf-8"))
         payload = ArbitragePayload(**data)
@@ -74,12 +82,16 @@ async def gate_approve_payload(request: Request, token: str = Depends(verify_db_
     if payload.ask_price <= 0 or payload.bid_price <= 0 or not (-100.0 <= payload.spread_percentage <= 100.0):
         raise HTTPException(status_code=400, detail="DROP: NUMERIC_INVARIANT_VIOLATION")
 
-    # Bind single-use monotonic nonce + HMAC digest to exact raw wire bytes
     nonce = os.urandom(16).hex()
-    ACTIVE_NONCES.add(nonce)
+    ACTIVE_NONCES[nonce] = now + NONCE_TTL_SECONDS
     msg = raw_bytes + b"|" + nonce.encode("utf-8")
     approval_hmac = hmac.new(GATE_SECRET, msg, hashlib.sha256).hexdigest()
-    return {"status": "CONTRACT_APPROVED", "nonce": nonce, "approval_hmac": approval_hmac}
+    return {
+        "status": "CONTRACT_APPROVED",
+        "nonce": nonce,
+        "approval_hmac": approval_hmac,
+        "ttl_seconds": NONCE_TTL_SECONDS
+    }
 
 @app.post("/api/v1/ingest/arbitrage")
 async def receive_arbitrage_signal(
@@ -88,12 +100,15 @@ async def receive_arbitrage_signal(
     x_etbv_hmac: str = Header(..., alias="X-ETBV-HMAC"),
     token: str = Depends(verify_db_token)
 ):
-    # Gate Check 1: Single-use atomic nonce burn (blocks replay attacks)
-    if x_etbv_nonce not in ACTIVE_NONCES:
-        raise HTTPException(status_code=403, detail="DROP: REPLAY_OR_INVALID_NONCE")
-    ACTIVE_NONCES.remove(x_etbv_nonce)
+    now = time.monotonic()
+    expiry = ACTIVE_NONCES.pop(x_etbv_nonce, None)
+    purge_expired_nonces(now)
 
-    # Gate Check 2: Exact wire-byte HMAC verification (blocks TOCTOU & forgery)
+    if expiry is None:
+        raise HTTPException(status_code=403, detail="DROP: REPLAY_OR_INVALID_NONCE")
+    if now > expiry:
+        raise HTTPException(status_code=403, detail="DROP: NONCE_EXPIRED")
+
     raw_bytes = await request.body()
     expected_msg = raw_bytes + b"|" + x_etbv_nonce.encode("utf-8")
     expected_hmac = hmac.new(GATE_SECRET, expected_msg, hashlib.sha256).hexdigest()
