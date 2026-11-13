@@ -164,3 +164,53 @@ with open("verification/artifacts/live_http_gate_proof.json", "r") as f:
 proof["sqlite_trigger_isolation"] = {"aborted": True, "error": trigger_msg}
 with open("verification/artifacts/live_http_gate_proof.json", "w") as f:
     json.dump(proof, f, indent=2)
+
+import glob
+import subprocess
+
+# Test 9: Verify backup creation, 7-file rotation retention, and isolated SQLite restoration integrity
+subprocess.run(["./backup_vault.sh"], stdout=subprocess.DEVNULL, check=True)
+backups = sorted(glob.glob("backups/monetization_vault_*.db"))
+assert 1 <= len(backups) <= 7
+latest_backup = backups[-1]
+
+tmp_dir = os.path.join(os.environ.get("PREFIX", "/data/data/com.termux/files/usr"), "tmp")
+os.makedirs(tmp_dir, exist_ok=True)
+restore_path = os.path.join(tmp_dir, "etbv_restore_verify.db")
+if os.path.exists(restore_path):
+    os.remove(restore_path)
+
+src_db = sqlite3.connect(latest_backup)
+dst_db = sqlite3.connect(restore_path)
+src_db.backup(dst_db)
+dst_db.close()
+src_db.close()
+
+chk = sqlite3.connect(restore_path)
+integrity = chk.execute("PRAGMA integrity_check").fetchone()[0]
+restored_rows = chk.execute("SELECT COUNT(*) FROM arbitrage_feeds").fetchone()[0]
+assert integrity == "ok" and restored_rows > 0
+
+try:
+    chk.execute("INSERT INTO arbitrage_feeds (source_market, target_market, asset_pair, spread_percentage, ask_price, bid_price) VALUES ('TEST', 'TEST', 'BTC/USD', 1.0, 1.0, 2.0)")
+    assert False, "Restored DB lost trg_require_gated_nonce trigger"
+except sqlite3.IntegrityError as e:
+    assert "DIRECT_UNGATED_INSERT_BLOCKED" in str(e)
+finally:
+    chk.close()
+    os.remove(restore_path)
+
+print(f"[TEST 9 - BACKUP & RESTORE] Retained: {len(backups)}/7 | Integrity: {integrity} | Restored Rows: {restored_rows} | Trigger Active: True")
+
+with open("verification/artifacts/live_http_gate_proof.json", "r") as f:
+    proof = json.load(f)
+proof["backup_rotation_and_restore"] = {
+    "retained_count": len(backups),
+    "max_retained": 7,
+    "latest_backup": os.path.basename(latest_backup),
+    "integrity_check": integrity,
+    "restored_rows": restored_rows,
+    "trigger_enforced_on_restore": True
+}
+with open("verification/artifacts/live_http_gate_proof.json", "w") as f:
+    json.dump(proof, f, indent=2)
