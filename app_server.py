@@ -176,3 +176,47 @@ async def fetch_live_stix_bundle(token: str = Depends(verify_db_token)):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
+from fastapi.responses import HTMLResponse
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def serve_dashboard():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, source_market, target_market, asset_pair, spread_percentage, ask_price, bid_price FROM arbitrage_feeds ORDER BY id DESC LIMIT 25")
+    rows = cursor.fetchall()
+    conn.close()
+
+    table_rows = "".join(
+        f"<tr><td>{r[0]}</td><td><strong>{r[3]}</strong></td><td>{r[1]}</td><td>{r[2]}</td>"
+        f"<td>${r[5]:,.2f}</td><td>${r[6]:,.2f}</td><td style='color:#22c55e;'>+{r[4]}%</td></tr>"
+        for r in rows
+    )
+
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>ETBV LayerZero Telemetry Dashboard</title>
+      <meta http-equiv="refresh" content="15">
+      <style>
+        body {{ background:#0b0f19; color:#e2e8f0; font-family:monospace; padding:24px; }}
+        h1 {{ color:#38bdf8; margin-bottom:4px; }}
+        .badge {{ display:inline-block; background:#064e3b; color:#34d399; padding:4px 10px; border-radius:4px; font-size:12px; margin-bottom:20px; }}
+        table {{ width:100%; border-collapse:collapse; background:#111827; }}
+        th, td {{ padding:10px 12px; border-bottom:1px solid #1f2937; text-align:left; }}
+        th {{ background:#1e293b; color:#94a3b8; }}
+      </style>
+    </head>
+    <body>
+      <h1>ETBV LayerZero Execution & Telemetry Vault</h1>
+      <div class="badge">GATE STATUS: ENFORCED (SINGLE-USE HMAC + 5s TTL) | AUTO-REFRESH: 15s</div>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Pair</th><th>Source</th><th>Target</th><th>Ask</th><th>Bid</th><th>Verified Spread</th></tr>
+        </thead>
+        <tbody>{table_rows}</tbody>
+      </table>
+    </body>
+    </html>
+    """
