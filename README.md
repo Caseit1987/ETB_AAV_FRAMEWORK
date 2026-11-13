@@ -14,11 +14,12 @@
   * `test_live_gate.py`: Live HTTP boundary verification against `localhost:8000`.
 * **Dual-Feed Producers (`etbv_client.py`):**
   * `scanner_producer.py`: Real-time cross-exchange spot spread scanner (`BTC/USD`, `ETH/USD`, `SOL/USD`) enforcing raw wire-byte signing.
-  * `threat_intel_producer.py`: Live CISA Known Exploited Vulnerabilities (KEV) advisory feed routed through the identical Layer Zero HMAC gate.
-* **STIX 2.1 Telemetry & Interactive Command Dashboard:**
+  * `threat_intel_producer.py`: Deduplicated CISA Known Exploited Vulnerabilities (KEV) advisory feed routed through the identical Layer Zero HMAC gate.
+* **STIX 2.1 Telemetry, Signed Audit Exports & Interactive Command Dashboard:**
   * `GET /api/v1/stix/bundle`: Live STIX 2.1 `observed-data` bundle endpoint.
+  * `GET /api/v1/audit/snapshot`: Serves the continuously updated, SHA-256 signed audit package combining all boundary proofs and verified vault telemetry.
   * `GET /dashboard`: Self-contained interactive HTML5 Canvas STIX 2.1 relationship graph and live execution ledger.
-  * `n8n_telemetry_bridge.py`: Automated STIX 2.1 webhook dispatcher with local snapshot fallback.
+  * `n8n_telemetry_bridge.py`: Automated STIX 2.1 webhook dispatcher with priority threshold alerts and local snapshot fallback.
 
 ---
 
@@ -45,5 +46,6 @@ chmod +x install.sh
 | `POST` | `/api/v1/gate/approve` | `X-API-Token` | Validates raw wire bytes against pre-parser invariants and issues a 5s single-use HMAC token + nonce. |
 | `POST` | `/api/v1/ingest/arbitrage` | `X-API-Token` + HMAC | Burns nonce atomically, verifies raw wire digest, and commits state to SQLite. |
 | `GET` | `/api/v1/stix/bundle` | `X-API-Token` | Returns a live STIX 2.1 `observed-data` bundle of all verified vault records. |
+| `GET` | `/api/v1/audit/snapshot` | `X-API-Token` | Returns the continuously refreshed, SHA-256 signed audit snapshot and non-bypassability proofs. |
 | `GET` | `/api/v1/daas/valuations` | `X-API-Token` | Returns raw verified vault rows. |
 | `GET` | `/dashboard` | Local | Interactive STIX 2.1 trust-boundary relationship graph and live execution table. |
