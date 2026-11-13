@@ -193,30 +193,129 @@ async def serve_dashboard():
         for r in rows
     )
 
+    pairs = sorted(list({r[3] for r in rows})) or ["BTC/USD", "ETH/USD", "SOL/USD"]
+    sources = sorted(list({r[1] for r in rows} | {r[2] for r in rows})) or ["COINBASE", "KRAKEN"]
+
+    nodes = [{"id": "GATE", "label": "ETBV LayerZero Gate", "group": "gate"}]
+    nodes += [{"id": f"SRC_{s}", "label": s, "group": "source"} for s in sources]
+    nodes += [{"id": f"PAIR_{p}", "label": p, "group": "pair"} for p in pairs]
+    nodes.append({"id": "VAULT", "label": f"Vault DB ({len(rows)} Verified)", "group": "vault"})
+
+    edges = [{"from": f"SRC_{s}", "to": "GATE", "label": "RAW_WIRE"} for s in sources]
+    edges += [{"from": "GATE", "to": f"PAIR_{p}", "label": "HMAC_APPROVED"} for p in pairs]
+    edges += [{"from": f"PAIR_{p}", "to": "VAULT", "label": "ATOMIC_COMMIT"} for p in pairs]
+
+    graph_json = json.dumps({"nodes": nodes, "edges": edges})
+
     return f"""
     <!DOCTYPE html>
     <html>
     <head>
-      <title>ETBV LayerZero Telemetry Dashboard</title>
-      <meta http-equiv="refresh" content="15">
+      <title>ETBV LayerZero STIX 2.1 Command Dashboard</title>
+      <meta http-equiv="refresh" content="20">
       <style>
-        body {{ background:#0b0f19; color:#e2e8f0; font-family:monospace; padding:24px; }}
-        h1 {{ color:#38bdf8; margin-bottom:4px; }}
-        .badge {{ display:inline-block; background:#064e3b; color:#34d399; padding:4px 10px; border-radius:4px; font-size:12px; margin-bottom:20px; }}
-        table {{ width:100%; border-collapse:collapse; background:#111827; }}
-        th, td {{ padding:10px 12px; border-bottom:1px solid #1f2937; text-align:left; }}
+        body {{ background:#0b0f19; color:#e2e8f0; font-family:monospace; padding:20px; margin:0; }}
+        h1 {{ color:#38bdf8; margin:0 0 6px 0; font-size:20px; }}
+        .badge {{ display:inline-block; background:#064e3b; color:#34d399; padding:4px 10px; border-radius:4px; font-size:12px; margin-bottom:16px; }}
+        .panel {{ background:#111827; border:1px solid #1f2937; border-radius:8px; padding:14px; margin-bottom:18px; }}
+        .panel-title {{ color:#94a3b8; font-size:12px; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px; }}
+        canvas {{ width:100%; height:280px; background:#070a12; border-radius:6px; display:block; cursor:grab; }}
+        table {{ width:100%; border-collapse:collapse; }}
+        th, td {{ padding:9px 10px; border-bottom:1px solid #1f2937; text-align:left; font-size:13px; }}
         th {{ background:#1e293b; color:#94a3b8; }}
       </style>
     </head>
     <body>
-      <h1>ETBV LayerZero Execution & Telemetry Vault</h1>
-      <div class="badge">GATE STATUS: ENFORCED (SINGLE-USE HMAC + 5s TTL) | AUTO-REFRESH: 15s</div>
-      <table>
-        <thead>
-          <tr><th>ID</th><th>Pair</th><th>Source</th><th>Target</th><th>Ask</th><th>Bid</th><th>Verified Spread</th></tr>
-        </thead>
-        <tbody>{table_rows}</tbody>
-      </table>
+      <h1>ETBV LayerZero Execution & STIX 2.1 Telemetry</h1>
+      <div class="badge">GATE: ENFORCED (SINGLE-USE HMAC + 5s TTL) | STIX 2.1 GRAPH LIVE</div>
+
+      <div class="panel">
+        <div class="panel-title">Interactive STIX 2.1 Trust Boundary Relationship Graph (Drag Nodes to Inspect)</div>
+        <canvas id="stixCanvas"></canvas>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Verified Atomic Executions (Latest 25)</div>
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Pair</th><th>Source</th><th>Target</th><th>Ask</th><th>Bid</th><th>Spread</th></tr>
+          </thead>
+          <tbody>{table_rows}</tbody>
+        </table>
+      </div>
+
+      <script>
+        const graph = {graph_json};
+        const canvas = document.getElementById("stixCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = canvas.offsetWidth;
+        canvas.height = 280;
+
+        const colors = {{ gate: "#38bdf8", source: "#f59e0b", pair: "#a855f7", vault: "#22c55e" }};
+        const colX = {{ source: 0.14, gate: 0.42, pair: 0.70, vault: 0.90 }};
+        const counts = {{}};
+
+        graph.nodes.forEach(n => {{
+          counts[n.group] = (counts[n.group] || 0) + 1;
+        }});
+        const seen = {{}};
+        graph.nodes.forEach(n => {{
+          seen[n.group] = (seen[n.group] || 0) + 1;
+          n.x = canvas.width * colX[n.group];
+          n.y = (canvas.height / (counts[n.group] + 1)) * seen[n.group];
+        }});
+
+        let dragging = null;
+        canvas.addEventListener("mousedown", e => {{
+          const r = canvas.getBoundingClientRect();
+          const mx = e.clientX - r.left, my = e.clientY - r.top;
+          dragging = graph.nodes.find(n => Math.hypot(n.x - mx, n.y - my) < 22);
+        }});
+        canvas.addEventListener("mousemove", e => {{
+          if (!dragging) return;
+          const r = canvas.getBoundingClientRect();
+          dragging.x = e.clientX - r.left;
+          dragging.y = e.clientY - r.top;
+          draw();
+        }});
+        window.addEventListener("mouseup", () => dragging = null);
+
+        function draw() {{
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const map = Object.fromEntries(graph.nodes.map(n => [n.id, n]));
+
+          graph.edges.forEach(e => {{
+            const a = map[e.from], b = map[e.to];
+            if (!a || !b) return;
+            ctx.strokeStyle = "#334155";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+
+            const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+            ctx.fillStyle = "#64748b";
+            ctx.font = "10px monospace";
+            ctx.fillText(e.label, mx - 28, my - 4);
+          }});
+
+          graph.nodes.forEach(n => {{
+            ctx.fillStyle = colors[n.group] || "#e2e8f0";
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, 12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = "#0f172a";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.fillStyle = "#f8fafc";
+            ctx.font = "11px monospace";
+            ctx.fillText(n.label, n.x - 36, n.y + 24);
+          }});
+        }}
+        draw();
+      </script>
     </body>
     </html>
     """
