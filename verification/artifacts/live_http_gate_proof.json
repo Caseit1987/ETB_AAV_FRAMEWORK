@@ -1,0 +1,14 @@
+{
+  "toctou_block": {
+    "http": 403,
+    "detail": "{\"detail\":\"DROP: TOCTOU_OR_FORGED_PAYLOAD\"}"
+  },
+  "replay_block": {
+    "http": 403,
+    "detail": "{\"detail\":\"DROP: REPLAY_OR_INVALID_NONCE\"}"
+  },
+  "atomic_allow": {
+    "http": 200,
+    "detail": "{\"status\":\"VERIFIED_ATOMIC_EXECUTION\"}"
+  }
+}
