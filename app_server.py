@@ -62,6 +62,15 @@ def init_db():
     master_token = os.getenv("ETB_MASTER_TOKEN")
     if master_token:
         cursor.execute("INSERT OR IGNORE INTO keys (token) VALUES (?)", (master_token,))
+    cursor.execute("""
+        CREATE TRIGGER IF NOT EXISTS trg_require_gated_nonce
+        BEFORE INSERT ON arbitrage_feeds
+        FOR EACH ROW
+        WHEN NEW.gated_nonce IS NULL OR length(NEW.gated_nonce) != 32
+        BEGIN
+            SELECT RAISE(ABORT, 'DIRECT_UNGATED_INSERT_BLOCKED');
+        END;
+    """)
     conn.commit()
     conn.close()
 
