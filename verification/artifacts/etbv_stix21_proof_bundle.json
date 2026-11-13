@@ -1,0 +1,95 @@
+{
+  "type": "bundle",
+  "id": "bundle--5b016d4a-f8d0-49b1-8b7b-c26714f82e95",
+  "objects": [
+    {
+      "type": "observed-data",
+      "spec_version": "2.1",
+      "id": "observed-data--7530237b-c86a-44b5-937f-a0538c746105",
+      "created": "2026-11-13T20:41:36.799356+00:00",
+      "modified": "2026-11-13T20:41:36.799634+00:00",
+      "first_observed": "2026-11-13T20:41:36.799645+00:00",
+      "last_observed": "2026-11-13T20:41:36.799650+00:00",
+      "number_observed": 10,
+      "x_etbv_verification_trace": [
+        {
+          "timestamp": 1794602284.4327571,
+          "route": "PRIMARY_ETBV_GATE",
+          "decision": "ALLOW",
+          "payload_hex": "000100000006010600100001",
+          "reason": "CONTRACT_APPROVED"
+        },
+        {
+          "timestamp": 1794602284.5371277,
+          "route": "PRIMARY_ETBV_GATE",
+          "decision": "DROP",
+          "payload_hex": "00020000000601060010000100060010dead",
+          "reason": "BYTE_ALIASING_MISMATCH (Declared:6 != Actual:12)"
+        },
+        {
+          "timestamp": 1794602284.6410992,
+          "route": "PRIMARY_ETBV_GATE",
+          "decision": "DROP",
+          "payload_hex": "000300000006010600109999",
+          "reason": "UNAUTHORIZED_REGISTER_VALUE (0x9999)"
+        },
+        {
+          "timestamp": 1794602422.7469263,
+          "route": "DIRECT_INTERNAL_CALL",
+          "action": "ENABLE_RAIL",
+          "status": "DROP",
+          "reason": "MISSING_LAYERZERO_TOKEN",
+          "rail_state": false
+        },
+        {
+          "timestamp": 1794602422.7470016,
+          "route": "CAN_BUS_INGRESS",
+          "action": "ENABLE_RAIL",
+          "status": "DROP",
+          "reason": "CAN_FRAME_INVARIANT_VIOLATION",
+          "rail_state": false
+        },
+        {
+          "timestamp": 1794602422.7478983,
+          "route": "CAN_BUS_INGRESS",
+          "action": "ENABLE_RAIL",
+          "status": "DROP",
+          "reason": "TOCTOU_STATE_DIVERGENCE",
+          "rail_state": false
+        },
+        {
+          "timestamp": 1794602422.7479825,
+          "route": "CAN_BUS_INGRESS",
+          "action": "ENABLE_RAIL",
+          "status": "ALLOW",
+          "reason": "VERIFIED_EXECUTION",
+          "rail_state": true
+        },
+        {
+          "timestamp": 1794602468.9421186,
+          "route": "CAN_BUS_INGRESS",
+          "action": "SET_RAIL_True",
+          "status": "ALLOW",
+          "reason": "VERIFIED_ATOMIC_EXECUTION",
+          "rail_state": true
+        },
+        {
+          "timestamp": 1794602468.9421954,
+          "route": "CAN_BUS_INGRESS",
+          "action": "SET_RAIL_True",
+          "status": "DROP",
+          "reason": "REPLAY_OR_INVALID_NONCE",
+          "rail_state": false
+        },
+        {
+          "timestamp": 1794602468.9422266,
+          "route": "FORGED_CALLER",
+          "action": "SET_RAIL_True",
+          "status": "DROP",
+          "reason": "REPLAY_OR_INVALID_NONCE",
+          "rail_state": false
+        }
+      ]
+    }
+  ]
+}

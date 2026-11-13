@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": 1794602468.9421186,
+    "route": "CAN_BUS_INGRESS",
+    "action": "SET_RAIL_True",
+    "status": "ALLOW",
+    "reason": "VERIFIED_ATOMIC_EXECUTION",
+    "rail_state": true
+  },
+  {
+    "timestamp": 1794602468.9421954,
+    "route": "CAN_BUS_INGRESS",
+    "action": "SET_RAIL_True",
+    "status": "DROP",
+    "reason": "REPLAY_OR_INVALID_NONCE",
+    "rail_state": false
+  },
+  {
+    "timestamp": 1794602468.9422266,
+    "route": "FORGED_CALLER",
+    "action": "SET_RAIL_True",
+    "status": "DROP",
+    "reason": "REPLAY_OR_INVALID_NONCE",
+    "rail_state": false
+  }
+]

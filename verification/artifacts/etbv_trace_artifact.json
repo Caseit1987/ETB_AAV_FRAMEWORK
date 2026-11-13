@@ -1,0 +1,29 @@
+{
+  "final_state": {
+    "address": 16,
+    "value": 1
+  },
+  "telemetry": [
+    {
+      "timestamp": 1794602284.4327571,
+      "route": "PRIMARY_ETBV_GATE",
+      "decision": "ALLOW",
+      "payload_hex": "000100000006010600100001",
+      "reason": "CONTRACT_APPROVED"
+    },
+    {
+      "timestamp": 1794602284.5371277,
+      "route": "PRIMARY_ETBV_GATE",
+      "decision": "DROP",
+      "payload_hex": "00020000000601060010000100060010dead",
+      "reason": "BYTE_ALIASING_MISMATCH (Declared:6 != Actual:12)"
+    },
+    {
+      "timestamp": 1794602284.6410992,
+      "route": "PRIMARY_ETBV_GATE",
+      "decision": "DROP",
+      "payload_hex": "000300000006010600109999",
+      "reason": "UNAUTHORIZED_REGISTER_VALUE (0x9999)"
+    }
+  ]
+}
