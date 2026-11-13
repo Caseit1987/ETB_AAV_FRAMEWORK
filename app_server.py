@@ -1,5 +1,7 @@
 import os
 import time
+import uuid
+import datetime
 import hmac
 import hashlib
 import sqlite3
@@ -12,10 +14,9 @@ app = FastAPI(title="Eternal Trust Engine - LayerZero Hardened")
 DB_PATH = "/data/data/com.termux/files/home/monetization_vault.db"
 api_key_header = APIKeyHeader(name="X-API-Token", auto_error=True)
 
-# Ephemeral Gate-Private Secret & Single-Use Nonce Store with 5s TTL
 GATE_SECRET = os.urandom(32)
 NONCE_TTL_SECONDS = 5.0
-ACTIVE_NONCES = {}  # nonce -> monotonic_expiry
+ACTIVE_NONCES = {}
 
 class ArbitragePayload(BaseModel):
     source_market: str
@@ -134,6 +135,43 @@ async def fetch_premium_metrics(token: str = Depends(verify_db_token)):
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+@app.get("/api/v1/stix/bundle")
+async def fetch_live_stix_bundle(token: str = Depends(verify_db_token)):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM arbitrage_feeds")
+    rows = cursor.fetchall()
+    conn.close()
+
+    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    records = [
+        {
+            "id": r[0],
+            "source_market": r[1],
+            "target_market": r[2],
+            "asset_pair": r[3],
+            "spread_percentage": r[4],
+            "ask_price": r[5],
+            "bid_price": r[6]
+        }
+        for r in rows
+    ]
+    return {
+        "type": "bundle",
+        "id": f"bundle--{uuid.uuid4()}",
+        "objects": [{
+            "type": "observed-data",
+            "spec_version": "2.1",
+            "id": f"observed-data--{uuid.uuid4()}",
+            "created": now_iso,
+            "modified": now_iso,
+            "first_observed": now_iso,
+            "last_observed": now_iso,
+            "number_observed": len(records),
+            "x_etbv_verified_vault_feed": records
+        }]
+    }
 
 if __name__ == "__main__":
     import uvicorn

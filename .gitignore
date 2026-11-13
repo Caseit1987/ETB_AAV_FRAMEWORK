@@ -1,3 +1,4 @@
 .env
 daemon_output.log
 __pycache__/
+pipeline_daemon.log
