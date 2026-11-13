@@ -1,30 +1,34 @@
 {
-  "revoked_token": 403,
-  "stream_cap": 413,
+  "isolated_background_producers": true,
+  "revoked_token": {
+    "http": 403
+  },
+  "stream_cap_4096b": {
+    "http": 413
+  },
   "atomic_commit": {
     "http": 200,
-    "before": 50,
-    "after": 51
+    "nonce": "4f5631a5bdd713db7b26f08d2d8daa1a",
+    "db_rows_for_nonce": 1
   },
   "post_commit_replay": {
     "http": 403,
-    "after": 51
+    "nonce": "4f5631a5bdd713db7b26f08d2d8daa1a",
+    "db_rows_for_nonce": 1
   },
-  "slow_body_deadline_block": {
+  "slow_body_deadline": {
     "http": 403,
-    "detail": "{\"detail\":\"DROP: COMMIT_DEADLINE_EXPIRED\"}",
-    "db_rows_before": 51,
-    "db_rows_after": 51
+    "nonce": "18a1e79e29bec661cc6dd8ae9eab988a",
+    "db_rows_for_nonce": 0
   },
   "concurrent_race_8x": {
     "wins_200": 1,
     "blocks_403": 7,
-    "db_rows_before": 51,
-    "db_rows_after": 52
+    "nonce": "0b8377d38389c9b82653637b1a77d6fa",
+    "db_rows_for_nonce": 1
   },
-  "audit_signature_verify": {
+  "audit_hmac_verify": {
     "valid_http": 200,
-    "tampered_http": 403,
-    "tampered_detail": "{\"detail\":\"DROP: AUDIT_HMAC_SIGNATURE_MISMATCH\"}"
+    "tampered_http": 403
   }
 }
